@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Article>
 <div class="row">
     <div class="col-10 offset-1">
         <a class="btn btn-primary" asp-area="" asp-controller="Article" asp-action="Add">Add Article</a>
@@ -12,36 +12,69 @@
             </thead>
             <tbody id="articleBody">
                 @*display data here*@
+
+                @foreach (var art in Model)
+                 {
+                    <tr>
+                        <td>@art.ArticleId</td>
+                        <td>@art.ArticleName</td>
+                    </tr>
+                 }
+
             </tbody>
         </table>
     </div>
 </div>
-@*<script src="~/lib/signalr/dist/browser/signalr.js"></script>*@
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/Notification/Notification.js"></script>
 <script>
 
-    var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
-    connection.on("SendMessageAsync", article => {
-        var stringData = JSON.stringify(article);
-        var data = JSON.parse(stringData);
-        ShowData(data);
-    });
-    connection.start().catch(function (err) {
-        return console.error(err.toString());
-    });
+    //var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
+    //connection.on("SendMessageAsync", article => {
+    //    var stringData = JSON.stringify(article);
+    //    var data = JSON.parse(stringData);
+    //    ShowData(data);
+    //});
+    //connection.start().catch(function (err) {
+    //    return console.error(err.toString());
+    //});
 
+
+    //connection.on("ReceiveMessage", article => {
+    //    var data = JSON.parse(article);
+    //    ShowData(data);  
+    //});
+
+
+    //var result = GetData();
+    //console.log(result);
+    //var data = JSON.parse(data);
+    //ShowData(data);
+
+    @*$.ajax({
+        url: "@Url.Action("Index")",
+        type: "Get",
+        success: function (data) {
+            console.log(data);
+        }
+
+    });*@
+
+
+
+
+
+
+    //show article data
     function ShowData(article) {
-        console.log('Article data:' + article);
-        console.log('Article ID:' + article.articleId);
-        console.log('Article Name:' + article.articleName);
-
         var tbody = document.querySelector("#articleBody");
         var tr = document.createElement("tr");
 
         var tdForArticleId = document.createElement("td");
         var tdForArticleName = document.createElement("td");
 
-        tdForArticleId.textContent = article.articleId;
-        tdForArticleName.textContent = article.articleName;
+        tdForArticleId.textContent = article.ArticleId;
+        tdForArticleName.textContent = article.ArticleName;
 
         tr.appendChild(tdForArticleId);
         tr.appendChild(tdForArticleName);

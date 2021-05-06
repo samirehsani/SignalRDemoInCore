@@ -6,20 +6,19 @@ using SignalRInCoreMVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SignalRInCoreMVC.Controllers
 {
     public class ArticleController : Controller
     {
-        //public static List<Article> Articles = new List<Article>
-        //{
-        //    new Article {ArticleId=1, ArticleName= "A1000" },
-        //    new Article {ArticleId=2, ArticleName= "A2000" },
-        //    new Article {ArticleId=3, ArticleName= "A3000" },
-        //    new Article {ArticleId=4, ArticleName= "A4000" },
-        //    new Article {ArticleId=5, ArticleName= "A5000" },
-        //};
+        public static List<Article> Articles = new List<Article>
+        {
+            new Article {ArticleId=1, ArticleName= "A1000" },
+            new Article {ArticleId=2, ArticleName= "A2000" },
+            new Article {ArticleId=3, ArticleName= "A3000" },
+        };
 
         private readonly IHubContext<NotificationHub, INotificationHub> notification;
 
@@ -29,7 +28,7 @@ namespace SignalRInCoreMVC.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View(Articles);
         }
 
         public IActionResult Add()
@@ -40,8 +39,10 @@ namespace SignalRInCoreMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Article article)
         {
-            await notification.Clients.All.SendMessageAsync(article); // send signalR
-            return View(); 
+            var articleData = JsonSerializer.Serialize(article);
+            Articles.Add(article);
+            await notification.Clients.All.ReceiveMessage(articleData); // send signalR
+            return RedirectToAction("Index"); 
         }
     }
 }

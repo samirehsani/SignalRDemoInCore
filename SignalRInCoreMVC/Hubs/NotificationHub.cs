@@ -10,9 +10,24 @@ namespace SignalRInCoreMVC.Hubs
 {
     public class NotificationHub :Hub<INotificationHub>
     {
-        public async Task SendMessage(Article article)
+        public Task SendMessageToAll(string message)
         {
-            await Clients.All.SendMessageAsync(article);
+            return Clients.All.ReceiveMessage(message);
+        }
+
+        public Task SubscribeToCategory(string category)
+        {
+             return Groups.AddToGroupAsync(Context.ConnectionId, category);
+        }
+
+        public Task SendMessageToCategory(string category, string message)
+        {
+            return Clients.Group(category).ReceiveMessage(message);
+        }
+
+        public Task UnSubscribeFromCategory(string category)
+        {
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, category);
         }
     }
 }

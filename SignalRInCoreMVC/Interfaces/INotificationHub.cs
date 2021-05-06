@@ -8,6 +8,6 @@ namespace SignalRInCoreMVC.Interfaces
 {
     public interface INotificationHub
     {
-        Task SendMessageAsync(Article article);
+        Task ReceiveMessage(string message);
     }
 }
