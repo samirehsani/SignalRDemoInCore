@@ -1,4 +1,4 @@
-﻿@model List<Article>
+﻿@*@model List<Article>*@
 <div class="row">
     <div class="col-10 offset-1">
         <a class="btn btn-primary" asp-area="" asp-controller="Article" asp-action="Add">Add Article</a>
@@ -13,13 +13,13 @@
             <tbody id="articleBody">
                 @*display data here*@
 
-                @foreach (var art in Model)
+                @*@foreach (var art in Model)
                  {
                     <tr>
                         <td>@art.ArticleId</td>
                         <td>@art.ArticleName</td>
                     </tr>
-                 }
+                 }*@
 
             </tbody>
         </table>
@@ -27,7 +27,62 @@
 </div>
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/lib/Notification/Notification.js"></script>
+<button onclick="JoinCategory()">Join category</button>
+
 <script>
+
+    // receive message for all
+    connection.on("ReceiveMessage", message => {
+        var data = JSON.parse(message);
+        ShowData(data);  
+    });
+
+    // JoinCategory
+    function JoinCategory() {
+        SubscribeToCategory("samir");
+    }
+
+    // receive message for category
+    connection.on("CategoryReceiveMessage", message => {
+        var data = JSON.parse(message);
+        ShowData(data);  
+    });
+
+    //show article data
+    function ShowData(article) {
+        var tbody = document.querySelector("#articleBody");
+        var tr = document.createElement("tr");
+
+        var tdForArticleId = document.createElement("td");
+        var tdForArticleName = document.createElement("td");
+
+        tdForArticleId.textContent = article.ArticleId;
+        tdForArticleName.textContent = article.ArticleName;
+
+        tr.appendChild(tdForArticleId);
+        tr.appendChild(tdForArticleName);
+        tbody.appendChild(tr);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
     //connection.on("SendMessageAsync", article => {
@@ -51,7 +106,7 @@
     //var data = JSON.parse(data);
     //ShowData(data);
 
-    @*$.ajax({
+    @* $.ajax({
         url: "@Url.Action("Index")",
         type: "Get",
         success: function (data) {
@@ -60,25 +115,5 @@
 
     });*@
 
-
-
-
-
-
-    //show article data
-    function ShowData(article) {
-        var tbody = document.querySelector("#articleBody");
-        var tr = document.createElement("tr");
-
-        var tdForArticleId = document.createElement("td");
-        var tdForArticleName = document.createElement("td");
-
-        tdForArticleId.textContent = article.ArticleId;
-        tdForArticleName.textContent = article.ArticleName;
-
-        tr.appendChild(tdForArticleId);
-        tr.appendChild(tdForArticleName);
-        tbody.appendChild(tr);
-    }
 
 </script>

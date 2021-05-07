@@ -28,7 +28,7 @@ namespace SignalRInCoreMVC.Controllers
         }
         public IActionResult Index()
         {
-            return View(Articles);
+            return View();
         }
 
         public IActionResult Add()
@@ -40,9 +40,8 @@ namespace SignalRInCoreMVC.Controllers
         public async Task<IActionResult> Add(Article article)
         {
             var articleData = JsonSerializer.Serialize(article);
-            Articles.Add(article);
-            await notification.Clients.All.ReceiveMessage(articleData); // send signalR
-            return RedirectToAction("Index"); 
+            await notification.Clients.Group("samir").CategoryReceiveMessage(articleData); // send signalR
+            return View(); 
         }
     }
 }
